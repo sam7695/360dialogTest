@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Message Previewer</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="message-preview-styling.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container-fluid clearfix mt-3 mb-3">
+      <div class="edit-container mr-1">
+        <h6><strong>Edit template</strong></h6>
+        <hr>
+
+        <div class="header-field-container">
+          <span><h6><strong>Header</strong></h6></span>
+          <span class="optional-tag"><strong>Optional</strong></span>
+        </div>
+        <div class="char-limit-container header-field">
+          <input type="text" class="form-control" id="inputField1" maxlength="60" oninput="updatePreview()">
+          <span id="charCount" class="form-text text-muted char-count input-count">0/60</span>
+        </div>
+
+        <h6><strong>Body</strong></h6>
+        <div class="char-limit-container">
+          <label class="mb-3 text-muted label-text">Enter the text for your message in the language you've selected.</label>
+          <span id="charCount" class="form-text text-muted char-count textarea-count">0/1024</span>
+          <textarea class="form-control" id="textareaField" maxlength="1024" rows="5" oninput="updatePreview()"></textarea>
+          <span class="form-text text-muted">Characters: <span id="textareaCharCount">0/1024</span></span>
+        </div>
+
+        <div class="footer-field-container">
+          <span><h6><strong>Footer</strong></h6></span>
+          <span class="optional-tag"><strong>Optional</strong></span>
+        </div>
+
+        <div class="char-limit-container">
+          <label class="mb-3 text-muted label-text">Add short line of text at the bottom of your message template. If you add the marketing opt-out button, th associated footer will be shown here by default.</label>
+          <input type="text" class="form-control" id="inputField2" maxlength="60" oninput="updatePreview()">
+          <span id="charCount" class="form-text text-muted char-count input-count">0/60</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="preview-container ml-1">
+          <h6 class="message-preview-header">Message Preview</h6>
+        </div>
+        <div class="preview-container ml-1 message-container">
+          <div class="message received">
+            <div id="messagePreview">No message yet.</div>
+            <div id="currentTime" class="current-time"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const inputField1 = document.getElementById('inputField1');
+      const inputField2 = document.getElementById('inputField2');
+      const textareaField = document.getElementById('textareaField');
+      const charCounts = document.querySelectorAll('.char-count');
+      const currentTimeElement = document.getElementById('currentTime');
+      const textareaCharCount = document.getElementById('textareaCharCount');
+
+      function updateTime() {
+        const currentTime = new Date();
+        const hours = currentTime.getHours();
+        const minutes = currentTime.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        currentTimeElement.innerText = `${formattedHours}:${formattedMinutes} ${ampm}`;
+      }
+
+      function updateCharCount(element, countElement) {
+        const currentLength = element.value.length;
+        const maxLength = parseInt(element.getAttribute('maxlength'));
+
+        countElement.innerText = `${currentLength}/${maxLength}`;
+      }
+
+      inputField1.addEventListener('input', function () {
+        updateCharCount(this, charCounts[0]);
+      });
+
+      textareaField.addEventListener('input', function () {
+        updateCharCount(this, charCounts[1]);
+        updateCharCount(this, textareaCharCount);
+      });
+
+      inputField2.addEventListener('input', function () {
+        updateCharCount(this, charCounts[2]);
+      });
+
+      function updatePreview() {
+        const headerText = document.getElementById('inputField1').value;
+        const bodyText = document.getElementById('textareaField').value.replace(/\n/g, "<br>");
+        const footerText = document.getElementById('inputField2').value;
+        const messagePreview = document.getElementById('messagePreview');
+
+        let previewContent = "No message yet.";
+
+        if (headerText || bodyText || footerText) {
+          previewContent = "";
+
+          if (headerText) {
+            previewContent += `<div class="message received preview-message-header">${headerText}</div>`;
+          }
+
+          if (bodyText) {
+            previewContent += `<div class="message received preview-message-body">${bodyText}</div>`;
+          }
+
+          if (footerText) {
+            previewContent += `<div class="message received muted-text preview-message-footer">${footerText}</div>`;
+          }
+        }
+        updateTime();
+
+        messagePreview.innerHTML = previewContent;
+      }
+
+      updateTime();
+      setInterval(updateTime, 1000);
+    </script>
+  </body>
+</html>
