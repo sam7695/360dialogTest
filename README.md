@@ -13,6 +13,8 @@ A simple and responsive single-page website built with HTML, CSS, Bootstrap and 
 ```bash
 https://sam7695.github.io/360dialogTest/
 ```
+- **Sample Image:** <img width="1670" alt="image" src="https://github.com/sam7695/360dialogTest/assets/133997107/865e12dc-c6b2-4bf0-9a81-56df6aa917a7">
+
 
 ## Features
 
